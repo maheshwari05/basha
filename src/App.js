@@ -1,26 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
+import React,{ Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import './App.css';
+import { Provider } from 'react-redux'
 
-function App() {
+import Main from './Components/main';
+import Store from './Store';
+const history = require('history').createBrowserHistory;
+
+class App extends Component{
+
+
+  render () {
+
+    const pages = [
+      {
+        pageLink: '/',
+        view: Main,
+        displayName: '',
+        animationDelayForNavbar: 0.2,
+      },
+    ];
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Provider store={Store}>
+      <Router history={history}>
+        <Route
+          render={({location}) => (
+              <Switch location={location}>
+                {pages.map((page, i) => {
+                  return (
+                    <Route
+                      exact
+                      path={page.pageLink}
+                      component={page.view}
+                      key={i}
+                    />
+                  );
+                })}
+                <Redirect to="/" />
+              </Switch>
+          )}
+        />
+      </Router>
+      </Provider>
     </div>
   );
 }
+}
 
-export default App;
+export default(App);
